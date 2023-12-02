@@ -16,10 +16,10 @@ import cv2
 import torch.nn.functional as F
 from collections import OrderedDict
 
-os.environ['CUDA_VISIBLE_DEVICES'] ='0'
-parser = argparse.ArgumentParser(description='PyTorch PPI network Training')
-parser.add_argument("--batchSize", type=int, default=16, help="training batch size")
-parser.add_argument("--nEpochs", type=int, default=2000, help="number of epochs to train for")
+os.environ['CUDA_VISIBLE_DEVICES'] ='0'                           #指定所使用的GPU显卡
+parser = argparse.ArgumentParser(description='PyTorch PPI network Training')  #创建对象，对象包含将命令行解析成python数据类型所需的全部信息
+parser.add_argument("--batchSize", type=int, default=16, help="training batch size") #训练更新中同时处理的样本数量
+parser.add_argument("--nEpochs", type=int, default=2000, help="number of epochs to train for") #定义训练次数
 parser.add_argument("--lr", type=float, default=5e-4, help="Learning Rate. Default=1e-4")
 parser.add_argument("--step", type=int, default=500, help="Sets the learning rate to the initial LR decayed by momentum every n epochs, Default: n=10")
 parser.add_argument("--cuda", action="store_true", help="Use cuda?")
