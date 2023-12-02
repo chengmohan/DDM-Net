@@ -1,12 +1,12 @@
-from datasets.data import get_training_set_opt, get_test_set_opt
-from torch.utils.data import DataLoader
-import argparse, os
-import torch
-import random
-import torch.backends.cudnn as cudnn
-from networks.DPDN import DPDN
-import torch.optim as optim
-from tqdm import tqdm
+from datasets.data import get_training_set_opt, get_test_set_opt   #从datasets.date的库中引出 get_training_set_opt, get_test_set_opt
+from torch.utils.data import DataLoader                            #从torch.utils.data库中引出 DataLoader 可能是一个数据导入部分
+import argparse, os                                                #是一个用于解析命令行参数的模块。OS系统模块
+import torch                                                       #它是 PyTorch 深度学习框架的核心库提供了张量计算（tensor computation）和自动求导（automatic differentiation）
+import random                                                      #引入随机函数库
+import torch.backends.cudnn as cudnn                               #torch.backends.cudnn 提供了与 cuDNN 相关的配置选项
+from networks.DPDN import DPDN                                     #从networks.DPDN中引入DPDN
+import torch.optim as optim                                        #把torch.optim库引入 并用optim代替
+from tqdm import tqdm                                              #
 from torch.autograd import Variable
 import numpy as np
 import pandas as pd
