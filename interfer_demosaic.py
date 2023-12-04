@@ -1,11 +1,11 @@
 ###\u6709\u5750\u6807\u56fe\u8f93\u5165\u7684\u5355\u6a21\u578b\u591a\u56fe\u8bc4\u4ef7\u65b9\u6cd5
-import argparse
-import cv2
-import math
-import numpy as np
-import os
-import torch
-import time
+import argparse   #命令行解析这个库可以让我们直接在命令行中就可以向程序中传入参数并让程序运行
+import cv2        #计算机视觉开源库平台
+import math       #一些数学运算 不能进行复数运算
+import numpy as np #支持大量的维度数组与矩阵运算
+import os         #操作系统库 提供的就是各种 Python 程序与操作系统进行交互的接口
+import torch      #PyTorch既可以看作加入了GPU支持的 numpy ，同时也可以看成一个拥有自动求导功能的强大的 深度神经网络 
+import time       #处理时间的
 from torch.autograd import Variable
 from libtiff import TIFF, TIFFfile, TIFFimage
 from networks.DPDN import DPDN
