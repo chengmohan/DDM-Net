@@ -9,8 +9,8 @@ import time       #处理时间的
 from torch.autograd import Variable
 from libtiff import TIFF, TIFFfile, TIFFimage
 from networks.DPDN import DPDN    #文件里有这个网络
-from PIL import Image
-from scipy import signal
+from PIL import Image  #图像处理库
+from scipy import signal #数学库
 from My_function import reorder_imec, reorder_2filter  #从自己写的包里引入 排序后的的cube 和 滤波器
 
 
