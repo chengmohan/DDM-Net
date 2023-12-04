@@ -8,10 +8,10 @@ import torch      #PyTorch既可以看作加入了GPU支持的 numpy ，同时�
 import time       #处理时间的
 from torch.autograd import Variable
 from libtiff import TIFF, TIFFfile, TIFFimage
-from networks.DPDN import DPDN
+from networks.DPDN import DPDN    #文件里有这个网络
 from PIL import Image
 from scipy import signal
-from My_function import reorder_imec, reorder_2filter
+from My_function import reorder_imec, reorder_2filter  #从自己写的包里引入 排序后的的cube 和 滤波器
 
 
 def matlab_style_gauss2D(shape=(3, 3), sigma=0.5):
