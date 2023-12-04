@@ -119,7 +119,7 @@ def input_matrix_wpn(inH, inW, msfa_size):
         h_offset_coord[i::msfa_size, :, 0] = (i+1)/msfa_size
         w_offset_coord[:, i::msfa_size, 0] = (i+1)/msfa_size
     pos_mat = torch.cat((h_offset_coord, w_offset_coord), 2)
-    pos_mat = pos_mat.contiguous().view(1, -1,2)
+    pos_mat = pos_mat.contiguous().view(1, -1,2)   #变为行向量
     return pos_mat
 
 def load_img(filepath):
