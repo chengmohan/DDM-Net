@@ -13,7 +13,7 @@ from PIL import Image  #图像处理库
 from scipy import signal #数学库
 from My_function import reorder_imec, reorder_2filter  #从自己写的包里引入 排序后的的cube 和 滤波器
 
-
+#生成matlab风格的2维高斯函数
 def matlab_style_gauss2D(shape=(3, 3), sigma=0.5):
     """
     2D gaussian mask - should give the same result as MATLAB's
@@ -28,9 +28,11 @@ def matlab_style_gauss2D(shape=(3, 3), sigma=0.5):
         h /= sumh
     return h
 
+#将一个输入和一个核进行卷积
 def filter2(x, kernel, mode='same'):
     return signal.convolve2d(x, np.rot90(kernel, 2), mode=mode)
 
+#得到每一个通道稀疏采样图像
 def mask_input(GT_image):
     mask = np.zeros((GT_image.shape[0], GT_image.shape[1], 16), dtype=np.float32)
     mask[0::4, 0::4, 0] = 1
@@ -52,6 +54,7 @@ def mask_input(GT_image):
     input_image = mask * GT_image
     return input_image
 
+#计算估计图像和真实图像的PSNR
 def compute_PSNR(estimated,real):
     estimated = np.float64(estimated)
     real = np.float64(real)
@@ -59,6 +62,7 @@ def compute_PSNR(estimated,real):
     PSNR = 10*np.log10(255*255/MSE)
     return PSNR
 
+#计算各通道的估计图像和各通道真实图像的SSIM
 def compute_ssim_channel(im1, im2, k1=0.01, k2=0.03, win_size=11, L=255):
     if not im1.shape == im2.shape:
         raise ValueError("Input Imagees must have the same dimensions")
@@ -69,6 +73,7 @@ def compute_ssim_channel(im1, im2, k1=0.01, k2=0.03, win_size=11, L=255):
     C1 = (k1 * L) ** 2
     C2 = (k2 * L) ** 2
     window = matlab_style_gauss2D(shape=(win_size, win_size), sigma=1.5)
+    #将窗的数值进行归一化
     window = window / np.sum(np.sum(window))
 
     if im1.dtype == np.uint8:
@@ -81,6 +86,7 @@ def compute_ssim_channel(im1, im2, k1=0.01, k2=0.03, win_size=11, L=255):
     mu1_sq = mu1 * mu1
     mu2_sq = mu2 * mu2
     mu1_mu2 = mu1 * mu2
+    #这里还不是很理解
     sigma1_sq = filter2(im1 * im1, window, 'valid') - mu1_sq
     sigma2_sq = filter2(im2 * im2, window, 'valid') - mu2_sq
     sigmal2 = filter2(im1 * im2, window, 'valid') - mu1_mu2
@@ -89,13 +95,14 @@ def compute_ssim_channel(im1, im2, k1=0.01, k2=0.03, win_size=11, L=255):
 
     return np.mean(np.mean(ssim_map))
 
+#计算各整体SSIM 即全部通道SSIM值之和的均值
 def compute_ssim(estimate,real):
     SSIM_totoal  =0
     for i in range(estimate.shape[2]):
         SSIM = compute_ssim_channel(estimate[:, :, i], real[:, :, i])
         SSIM_totoal += SSIM
     return SSIM_totoal / 16.0
-
+#计算sam
 def compute_sam(x_true,x_pre):
     buff1 = x_true*x_pre
     buff2 = np.sum(buff1, 2)
