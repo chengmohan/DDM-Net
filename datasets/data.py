@@ -1,5 +1,5 @@
 import sys
-sys.path.append('../')
+sys.path.append('../')  #在上一级目录里查找
 from torchvision.transforms import Compose, CenterCrop, ToTensor, Resize, ToPILImage
 from .dataset_PPI import DatasetFromFolder_PPI
 from .dataset import DatasetFromFolder
@@ -8,6 +8,7 @@ def calculate_valid_crop_size(crop_size, upscale_factor):
     return crop_size - (crop_size % upscale_factor)
 
 def input_transform():
+    #Compose 把多个步骤整合到一起
     return Compose([
         # ToPILImage(),
         # CenterCrop(crop_size),
