@@ -5,7 +5,7 @@ from scipy import signal,misc
 import cv2
 import os
 from torch.nn import functional as F
-
+#为什莫输入图像是个四维图像 高和宽
 def my_sparased(image,channel):
     spar = np.zeros_like(image)
     hei1 = image.shape[2]
@@ -18,7 +18,7 @@ def my_sparased(image,channel):
 class DPDN(nn.Module):
     def __init__(self,DPG_num_channels =1, DPG_base_channels = 24,DPG_num_residuals = 2,DDM_num_channels = 2, DDM_base_channels = 64, DDM_num_residuals =3):
         super(DPDN, self).__init__()
-
+        #DPG卷积神经网络的模块
         self.DPG = nn.Sequential(nn.Conv2d(DPG_num_channels, DPG_base_channels, kernel_size=9, stride=1, padding=4, bias=True),
                                  nn.ReLU(inplace=True),
                                  *[
