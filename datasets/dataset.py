@@ -8,7 +8,7 @@ import  numpy as np
 import random
 from My_function import reorder_imec, mask_input
 from random import randint
-
+#判断图像的扩展名是不是.png,.jpg,.jpeg,.tif
 def is_image_file(filename):
     return any(filename.endswith(extension) for extension in [".png", ".jpg", ".jpeg", ".tif"])
 
