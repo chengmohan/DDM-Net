@@ -33,7 +33,7 @@ def randcrop(a, crop_size):
 #计算有效的剪裁尺寸
 def calculate_valid_crop_size(crop_size, upscale_factor):
     return crop_size - (crop_size % upscale_factor)
-#定一个一个来自文件夹的类 继承 data.Dataset
+#定一个一个来自文件夹的类 继承 data.Dataset 自定义一个数据集 
 class DatasetFromFolder(data.Dataset):
     #本身 图像目录 旗帜 输入变形，目标变形 声明
     def __init__(self, image_dir, norm_flag, input_transform=None, target_transform=None, augment=False):
@@ -50,7 +50,7 @@ class DatasetFromFolder(data.Dataset):
         self.image_filenames = [join(image_dir, x) for x in sorted(listdir(image_dir))]
         #self.image_filenames1 = [join(image_dir, x) for x in listdir(image_dir1)]
         print(self.image_filenames)
-        #将原始图像裂变打乱
+        #将不同图片的文件打乱
         random.shuffle(self.image_filenames)
         #输入图像名字
         print(self.image_filenames)
@@ -66,8 +66,9 @@ class DatasetFromFolder(data.Dataset):
         # input_image = load_img(self.image_filenames[index]) # 512 512 16
         #按照传入index加载数据，加载特定波段的图像，这只能加载npy后缀的图片
         input_image  = np.load(self.image_filenames[index])
-        #把图像转化为32位的浮点数据类型
+        #把图像转化为32位的浮点数据类型 这个可能用不了了
         input_image = input_image.astype(np.float32)
+        %判断是否将图像归一化
         if self.norm_flag:
             norm_name = 'maxnorm'
             #得到这个图像像素的最大值
@@ -77,6 +78,7 @@ class DatasetFromFolder(data.Dataset):
             for bn in range(16):
                 input_image[:, :, bn] = input_image[:, :, bn] * norm_factor[bn]
         input_image = randcrop(input_image, self.crop_size)
+        #图像的一些变化
         if self.augment:
             if np.random.uniform() < 0.5:
                 input_image = np.fliplr(input_image)
@@ -86,7 +88,7 @@ class DatasetFromFolder(data.Dataset):
             input_image = np.rot90(input_image, k=np.random.randint(0, 4))
         target = input_image.copy()
         #ToDo 确认这里的mask
-        ###原本的im_gt_y按照实际相机滤波阵列排列
+        ###原本的im_gt_y按照实际相机滤波阵列排列 对多光谱图像进行采样
         input_image = mask_input(target,4)
         ###按照实际相机滤波阵列排列逆还原为从大到小的顺序
         input_image = reorder_imec(input_image) # sparase_image
@@ -94,11 +96,12 @@ class DatasetFromFolder(data.Dataset):
         random_index = randint(0, 15)
 
         if self.input_transform:
+            #将矩阵沿着波长方向累加
             raw = input_image.sum(axis=2)   #  how sum(axis=0 or 2)  2
             raw = self.input_transform(raw)  #this
             sparse_image = input_image[:, :, random_index]  # ? channel axis 0?
-            sparse_image = np.expand_dims(sparse_image, 0)
-            sparse_image = sparse_image.transpose(1,2,0)
+            sparse_image = np.expand_dims(sparse_image, 0) #稀疏图像是一个二维的转换为3维 矩阵变为 1 高 长
+            sparse_image = sparse_image.transpose(1,2,0) #变为和原始数据一样的 高 长 波段
             sparse_image = self.input_transform(sparse_image)
             input_image = self.input_transform(input_image)   # sparase_image
             # print(input_image.size())
