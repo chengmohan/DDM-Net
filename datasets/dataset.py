@@ -77,6 +77,7 @@ class DatasetFromFolder(data.Dataset):
             norm_factor = max_raw / max_subband
             for bn in range(16):
                 input_image[:, :, bn] = input_image[:, :, bn] * norm_factor[bn]
+        #将图像随机裁剪为相应的大小
         input_image = randcrop(input_image, self.crop_size)
         #图像的一些变化
         if self.augment:
@@ -86,6 +87,7 @@ class DatasetFromFolder(data.Dataset):
                 input_image = np.flipud(input_image)
             # ToDo 增强方式是否足够
             input_image = np.rot90(input_image, k=np.random.randint(0, 4))
+        
         target = input_image.copy()
         #ToDo 确认这里的mask
         ###原本的im_gt_y按照实际相机滤波阵列排列 对多光谱图像进行采样
