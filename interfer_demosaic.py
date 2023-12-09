@@ -86,7 +86,7 @@ def compute_ssim_channel(im1, im2, k1=0.01, k2=0.03, win_size=11, L=255):
     mu1_sq = mu1 * mu1
     mu2_sq = mu2 * mu2
     mu1_mu2 = mu1 * mu2
-    #这里还不是很理解
+    #D=E(X^2)-E(X)
     sigma1_sq = filter2(im1 * im1, window, 'valid') - mu1_sq
     sigma2_sq = filter2(im2 * im2, window, 'valid') - mu2_sq
     sigmal2 = filter2(im1 * im2, window, 'valid') - mu1_mu2
@@ -119,7 +119,7 @@ def compute_sam(x_true,x_pre):
     SAM = (buff9) * 180 / np.pi
     return SAM
 
-
+#设计当前python可见显卡的序号
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 parser = argparse.ArgumentParser(description="PyTorch LapSRN Eval")
 parser.add_argument("--cuda", action="store_true", help="use cuda?")
@@ -154,6 +154,7 @@ with torch.no_grad():
         for image_name in sorted(os.listdir(image_list)):
             print("Processing ", image_name)
             sample_num = sample_num + 1
+            加载是.npy格式的文件
             target_demosaic = np.load(opt.dataset + "/" + image_name)  # 512*512*16
             
             im_l_y = mask_input(target_demosaic)
@@ -176,7 +177,7 @@ with torch.no_grad():
             raw_batch =  np.zeros((16,1,raw.shape[0],raw.shape[1]))
             for index in range(16):
                 raw_batch[index,0,:,:] = raw
-
+            ###
             im_input = Variable(torch.from_numpy(im_input).float()).view(1, -1, im_input.shape[1], im_input.shape[2])
             raw_batch = Variable(torch.from_numpy(raw_batch).float()).view(16, -1, raw.shape[0], raw.shape[1])
             sparse_image_batch = np.zeros((16,1,raw.shape[0],raw.shape[1]))
@@ -184,6 +185,7 @@ with torch.no_grad():
                 sparse_image_batch[index,0,:,:] =  im_l_y[index,:,:]
 
             sparse_image_batch = Variable(torch.from_numpy(sparse_image_batch).float()).view(16, -1, raw.shape[0],raw.shape[1])
+            #图像加载到GPU还是CPU上
             if cuda:
                 # PPI_net = PPI_net.cuda()
                 model = model.cuda()
@@ -196,6 +198,7 @@ with torch.no_grad():
                 # estimated_PPI = PPI_net(raw)
                 
             start_time = time.time()
+            #看神经网络中初始化后的返回值
             estimated_PPI, estimated_demosaic = model(raw_batch, sparse_image_batch)
             elapsed_time = time.time() - start_time
             #print("elapsed_time",elapsed_time)
