@@ -5,7 +5,7 @@ from scipy import signal,misc
 import cv2
 import os
 from torch.nn import functional as F
-#为什莫输入图像是个四维图像 高和宽
+#传进来一个四维的数据 包括了 波段 子块中图像的个数 行和列
 def my_sparased(image,channel):
     spar = np.zeros_like(image)
     hei1 = image.shape[2]
