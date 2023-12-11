@@ -71,9 +71,10 @@ class DPDN(nn.Module):
             weights_init_kaiming(m)
 
     def forward(self, mosaicked, sparse_image):
-
+        #对马赛克图像进行卷积得到PPI
         conv_filter_M = torch.Tensor(
             [[[[1, 2, 2, 2, 1], [2, 4, 4, 4, 2], [2, 4, 4, 4, 2], [2, 4, 4, 4, 2], [1, 2, 2, 2, 1]]]]).cuda()
+        #对稀疏图像插值解马赛克的卷积核
         conv_filter_H = torch.Tensor(
             [[[[1, 2, 3, 4, 3, 2, 1], [2, 4, 6, 8, 6, 4, 2], [3, 6, 9, 12, 9, 6, 3], [4, 8, 12, 16, 12, 8, 4],
                [3, 6, 9, 12, 9, 6, 3], [2, 4, 6, 8, 6, 4, 2], [1, 2, 3, 4, 3, 2, 1]]]]).cuda()
@@ -86,7 +87,7 @@ class DPDN(nn.Module):
         #torch.clamp(PPI_estimated, min=0, max=1)
 
         Demosaic = F.conv2d(sparse_image, conv_filter_H, padding='same') / 16.0
-
+        #将解双线性插值后解码赛克图像和稀疏图像在多光谱维度进行拼接
         Demosaic_feature = self.extract2(torch.cat((Demosaic,sparse_image),1))
         PPI_feature = self.extract(PPI_estimated)
 
