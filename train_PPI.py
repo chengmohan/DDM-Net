@@ -13,7 +13,7 @@ import pandas as pd
 from math import log10
 from torch.nn import functional as F
 import cv2
-
+#设置使用GPU=0
 os.environ['CUDA_VISIBLE_DEVICES'] ='0'
 
 parser = argparse.ArgumentParser(description='PyTorch PPI network Training')
@@ -53,9 +53,9 @@ def main():
     torch.manual_seed(opt.seed)
     if cuda:
         torch.cuda.manual_seed(opt.seed)
-
+   #设置 torch.backends.cudnn.benchmark=True 将会让程序在开始时花费一点额外时间，为整个网络的每个卷积层搜索最适合它的卷积实现算法
     cudnn.benchmark = True
-
+   
     print("===> Loading datasets")
     opt.norm_flag = False
     opt.augment_flag = False
@@ -88,12 +88,14 @@ def main():
     if opt.pretrained:
         if os.path.isfile(opt.pretrained):
             print("=> loading model '{}'".format(opt.pretrained))
+            #加载预训练的的模型
             weights = torch.load(opt.pretrained, map_location=lambda storage, loc: storage)
             model.load_state_dict(weights['model'].state_dict())
         else:
             print("=> no model found at '{}'".format(opt.pretrained))
 
     print("===> Setting Optimizer")
+    #model.parameters()储存的是模型的权
     optimizer = optim.Adam(model.parameters(), lr=opt.lr, weight_decay=opt.weight_decay)
     save_opt(opt)
 
@@ -232,6 +234,7 @@ def save_statistics(opt, results, epoch):
     statistics_folder = "checkpoint/pre-training/"
     if not os.path.exists(statistics_folder):
         os.makedirs(statistics_folder)
+    #
     data_frame = pd.DataFrame(
         data=results,index=range(opt.start_epoch, epoch + 1))
     data_frame.to_csv(statistics_folder + str(opt.start_epoch) + '_train_results.csv', index_label='Epoch')
