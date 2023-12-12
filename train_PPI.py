@@ -47,7 +47,7 @@ def main():
     opt.cuda = True
     if cuda and not torch.cuda.is_available():
         raise Exception("No GPU found, please run without --cuda")
-
+    #设计随即数种子 这个每次随机生成的数值都是一样 网络的初始化参数都是一样的
     opt.seed = random.randint(1, 10000)
     print("Random Seed: ", opt.seed)
     torch.manual_seed(opt.seed)
@@ -59,7 +59,7 @@ def main():
     print("===> Loading datasets")
     opt.norm_flag = False
     opt.augment_flag = False
-
+    #读取数据
     train_set = get_PPI_training_set_opt(opt.train_dir, opt.msfa_size, opt.norm_flag, opt.augment_flag)
     test_set = get_PPI_test_set_opt(opt.val_dir, opt.msfa_size, opt.norm_flag)
     training_data_loader = DataLoader(dataset=train_set, batch_size=opt.batchSize, shuffle=True)
