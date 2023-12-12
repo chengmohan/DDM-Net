@@ -78,7 +78,7 @@ class DatasetFromFolder(data.Dataset):
             for bn in range(16):
                 input_image[:, :, bn] = input_image[:, :, bn] * norm_factor[bn]
         #将图像随机裁剪为相应的大小
-        input_image = randcrop(input_image, self.crop_size)
+        #input_image = randcrop(input_image, self.crop_size)
         #图像的一些变化
         if self.augment:
             if np.random.uniform() < 0.5:
@@ -93,8 +93,8 @@ class DatasetFromFolder(data.Dataset):
         ###原本的im_gt_y按照实际相机滤波阵列排列 对多光谱图像进行采样
         input_image = mask_input(target,4)
         ###按照实际相机滤波阵列排列逆还原为从大到小的顺序
-        input_image = reorder_imec(input_image) # sparase_image
-        target = reorder_imec(target)  # multi-spectral
+        #input_image = reorder_imec(input_image) # sparase_image
+        #target = reorder_imec(target)  # multi-spectral
         random_index = randint(0, 15)
 
         if self.input_transform:
